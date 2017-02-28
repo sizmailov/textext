@@ -222,7 +222,8 @@ class TexText(inkex.Effect):
 
         show_log()
 
-    def preview_convert(self, text, preamble_file, converter_class, image_setter):
+    @staticmethod
+    def preview_convert(text, preamble_file, converter_class, image_setter):
         """
         Generates a preview PNG of the LaTeX output using the selected converter.
 
@@ -302,7 +303,7 @@ class TexText(inkex.Effect):
             add_log_message("No new Node!", LOG_LEVEL_DEBUG)
             return
 
-        # -- Set textext attribs
+        # -- Store textext attributes
         new_node.attrib['{%s}text' % TEXTEXT_NS] = text.encode('string-escape')
         new_node.attrib['{%s}preamble' % TEXTEXT_NS] = preamble_file.encode('string-escape')
         new_node.attrib['{%s}scale' % TEXTEXT_NS] = str(scale_factor).encode('string-escape')
@@ -464,10 +465,12 @@ class TexText(inkex.Effect):
                 old_style_dict["fill"] = color
                 node.attrib["style"] = ss.formatStyle(old_style_dict)
 
-    def path_from_node(self, node):
+    @staticmethod
+    def path_from_node(node):
         return node.attrib['d']
 
-    def line_from_node(self, node):
+    @staticmethod
+    def line_from_node(node):
         return 'M{x1},{y1} L{x2},{y2}'.format(x1=node.attrib['x1'],
                                               x2=node.attrib['x2'],
                                               y1=node.attrib['y1'],
@@ -619,7 +622,8 @@ class TexText(inkex.Effect):
         transform = 'matrix(%s, %s, %s, %s, %f, %f)' % (a, b, c, d, new_x, new_y)
         node.attrib['transform'] = transform
 
-    def get_node_transform(self, node):
+    @staticmethod
+    def get_node_transform(node):
         """
         Gets the matrix values form the node's transform attribute
         :param node:

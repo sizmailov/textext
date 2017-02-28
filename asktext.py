@@ -57,8 +57,8 @@ except ImportError:
 
         TOOLKIT = TK
     except ImportError:
-        raise RuntimeError("Neither pygtk nor Tkinter is available! \n Hint: "
-                           "If you updated Inkscape from 0.48 to 0.91 under Windows you have to reinstall PyGTK!")
+        raise RuntimeError("Neither pygtk nor Tkinter is available! \n Hint: If you updated Inkscape "
+                           "from 0.48 to 0.91 under Windows you have to reinstall PyGTK!")
 
 
 def set_monospace_font(text_view):
@@ -122,7 +122,8 @@ class AskerFactory(object):
         :param current_scale_factor:
         :param text: Prefilled text
         :param preamble_file: Preamble file path
-        :param global_scale_factor: A scale factor (0.1 to 10)
+        :param global_scale_factor: The globally last used scale factor (0.1 to 10)
+        :param current_scale_factor: The node's saved scale factor (0.1 to 10)
         :return: an instance of AskText
         """
         if TOOLKIT == TK:
@@ -284,8 +285,9 @@ if TOOLKIT in (GTK, GTKSOURCEVIEW):
                  'Whether to insert space characters when inserting tabulations', self.insert_spaces_toggled_cb, False)
             ]
 
-            self._radio_actions = [('TabsWidth%d' % num, None, '%d' % num, None, 'Set tabulation width to %d spaces' % num, num) for num in range(2, 13, 2)]
-
+            self._radio_actions = [
+                ('TabsWidth%d' % num, None, '%d' % num, None, 'Set tabulation width to %d spaces' % num, num) for num in
+                range(2, 13, 2)]
 
             gtksourceview_ui_additions = "" if TOOLKIT == GTK else """
             <menu action='ViewMenu'>
@@ -296,7 +298,7 @@ if TOOLKIT in (GTK, GTKSOURCEVIEW):
                 %s
               </menu>
             </menu>
-            """ % "".join(['<menuitem action=\'TabsWidth%d\'/>' % num for num in range(2, 13, 2)])
+            """ % "".join(['<menuitem action=\'%s\'/>' % action for (action, _, _, _, _, _) in self._radio_actions])
 
             self._view_ui_description = """
             <ui>
@@ -310,10 +312,9 @@ if TOOLKIT in (GTK, GTKSOURCEVIEW):
             """.format(additions=gtksourceview_ui_additions)
 
         @staticmethod
-        def open_file_cb(unused, text_buffer):
+        def open_file_cb(_, text_buffer):
             """
             Present file chooser to select a source code file
-            :param unused: ignored parameter
             :param text_buffer: The target text buffer to show the loaded text in
             """
             chooser = gtk.FileChooserDialog('Open file...', None,
@@ -467,7 +468,8 @@ if TOOLKIT in (GTK, GTKSOURCEVIEW):
         def move_cursor_cb(self, text_buffer, cursoriter, mark, view):
             self.update_position_label(text_buffer, view)
 
-        def window_deleted_cb(self, widget, event, view):
+        @staticmethod
+        def window_deleted_cb(widget, event, view):
             gtk.main_quit()
             return True
 

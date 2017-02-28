@@ -57,8 +57,8 @@ except ImportError:
 
         TOOLKIT = TK
     except ImportError:
-        raise RuntimeError("Neither pygtk nor Tkinter is available! \n Hint: " \
-            "If you updated Inkscape from 0.48 to 0.91 under Windows you have to reinstall PyGTK!")
+        raise RuntimeError("Neither pygtk nor Tkinter is available! \n Hint: "
+                           "If you updated Inkscape from 0.48 to 0.91 under Windows you have to reinstall PyGTK!")
 
 
 def set_monospace_font(text_view):
@@ -447,8 +447,7 @@ if TOOLKIT in (GTK, GTKSOURCEVIEW):
             else:
                 self.preamble_file = self._preamble_widget.get_text()
 
-            if self.global_scale_factor is None:
-                self.global_scale_factor = self._scale_adj.get_value()
+            self.global_scale_factor = self._scale_adj.get_value()
 
             try:
                 self.callback(self.text, self.preamble_file, self.global_scale_factor)

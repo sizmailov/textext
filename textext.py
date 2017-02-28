@@ -668,7 +668,7 @@ class Settings(object):
             try:
                 self.values = {}
                 for line in f.read().split("\n"):
-                    if not '=' in line:
+                    if '=' not in line:
                         continue
                     k, v = line.split("=", 1)
                     self.values[k.strip()] = v.strip()

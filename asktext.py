@@ -162,7 +162,8 @@ class AskText(object):
         """
         pass
 
-    def cb_cancel(self, widget=None, data=None):
+    @staticmethod
+    def cb_cancel(widget=None, data=None):
         """Callback for Cancel button"""
         raise SystemExit(1)
 
@@ -540,7 +541,7 @@ if TOOLKIT in (GTK, GTKSOURCEVIEW):
 
             return button_box
 
-        def clear_preamble(self, unused=None):
+        def clear_preamble(self, _=None):
             """
             Clear the preamble file setting
             """
@@ -550,12 +551,11 @@ if TOOLKIT in (GTK, GTKSOURCEVIEW):
             else:
                 self._preamble_widget.set_text(self.preamble_file)
 
-        def reset_scale_factor(self, unused=None):
+        def reset_scale_factor(self, _=None):
             self._scale_adj.set_value(self.current_scale_factor)
 
-        def use_global_scale_factor(self, unused=None):
+        def use_global_scale_factor(self, _=None):
             self._scale_adj.set_value(self.global_scale_factor)
-
 
         # ---------- Create main window
         def create_window(self):
@@ -597,9 +597,11 @@ if TOOLKIT in (GTK, GTKSOURCEVIEW):
             self._scale.set_tooltip_text("Change the scale of the LaTeX output")
 
             # We need buttons with custom labels and stock icons, so we make some
-            items = [('tt-reset', 'Reset ({:.1f})'.format(self.current_scale_factor), 0, 0, None),
+            reset_scale = self.current_scale_factor if self.current_scale_factor else self.global_scale_factor
+            items = [('tt-reset', 'Reset ({:.1f})'.format(reset_scale), 0, 0, None),
                      ('tt-global', 'Global ({:.1f})'.format(self.global_scale_factor), 0, 0, None)]
 
+            # Forcibly show icons
             settings = gtk.settings_get_default()
             settings.props.gtk_button_images = True
 
@@ -616,7 +618,7 @@ if TOOLKIT in (GTK, GTKSOURCEVIEW):
                 factory.add(new_stock, icon_set)
 
             scale_reset_button = gtk.Button(stock='tt-reset')
-            scale_reset_button.set_tooltip_text("Reset the scale to the saved value of {:.1f}".format(self.current_scale_factor))
+            scale_reset_button.set_tooltip_text("Reset the scale to the saved value of {:.1f}".format(reset_scale))
             scale_reset_button.connect('clicked', self.reset_scale_factor)
 
             scale_global_button = gtk.Button(stock='tt-global')
@@ -680,7 +682,7 @@ if TOOLKIT in (GTK, GTKSOURCEVIEW):
             self._preview = gtk.Image()
 
             # Vertical Layout
-            vbox = gtk.VBox(0, False)
+            vbox = gtk.VBox(False, 4)
             window.add(vbox)
 
             vbox.pack_start(menu, False, False, 0)

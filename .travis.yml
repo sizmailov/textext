@@ -38,14 +38,14 @@ matrix:
           - imagemagick
           - texlive-latex-base
     - os: windows
-        before_install:
-          - choco install pdf2svg
-          - choco install ghostscript
-          - choco install python2
-          - choco install pygtk-all-in-one_win32_py2.7
-          - choco install inkscape
-          - choco install miktex
-          - export PATH="/c/Python27:$PATH"
+      before_install:
+        - choco install pdf2svg
+        - choco install ghostscript
+        - choco install python2
+        - choco install pygtk-all-in-one_win32_py2.7
+        - choco install inkscape
+        - choco install miktex
+        - export PATH="/c/Python27:$PATH"
 
 before_script:
    - python2 -m pip install pytest lxml Pillow

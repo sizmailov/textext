@@ -1,3 +1,5 @@
+language: shell
+
 branches:
   only:
   - master
@@ -40,13 +42,13 @@ matrix:
         - choco install pdf2svg
         - choco install ghostscript
         - choco install python2
-        - choco install pygtk-all-in-one_win32_py2.7
+#        - choco install pygtk-all-in-one_win32_py2.7
         - choco install inkscape
         - choco install miktex
         - export PATH="/c/Python27:$PATH"
 
 before_script:
-   - python2 -m pip install pytest lxml Pillow
+   - python2 -m pip install pytest lxml Pillow --user
    - python2 test_installation_script.py 2> /dev/null
    - python3 test_installation_script.py 2> /dev/null # also test python3 as installer
    - python2 setup.py

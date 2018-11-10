@@ -40,7 +40,7 @@ matrix:
     - os: windows
       before_install:
         - choco install pdf2svg
-        - choco install ghostscript
+#        - choco install ghostscript
         - choco install python2
 #        - choco install pygtk-all-in-one_win32_py2.7
         - choco install inkscape

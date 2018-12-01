@@ -47,17 +47,17 @@ script:
 
 after_success:
   - VERSION_CHANGED=$(git diff-tree --no-commit-id --name-only -r HEAD | grep -q extension/textext/VERSION; echo $?;)
+  - VERSION=$(head -n 1 extension/textext/VERSION)
+  - git tag
+  - if [[ $VERSION_CHANGED = 0 ]]; then
+      git tag $VERSION -a -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER";
+    fi
 
 before_deploy:
   - bash build_docs.sh
   - python2 build_packages.py
   - git config --global user.email "builds@travis-ci.com"
   - git config --global user.name "Travis CI"
-  - VERSION=$(head -n 1 extension/textext/VERSION)
-  - git tag
-  - if [[ $VERSION_CHANGED = 0 ]]; then
-      git tag $VERSION -a -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER";
-    fi
   - if echo $VERSION | grep -q "-" ;
       then export GITHUB_DEPLOY_PRERELEASE=true;
       else export GITHUB_DEPLOY_PRERELEASE=false;

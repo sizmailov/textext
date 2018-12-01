@@ -68,7 +68,7 @@ deploy:
     github-token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
     keep-history: false
     on:
-      tags: true
+      branch: feature/add_travis_deploy
       dist: xenial
 
   - provider: releases
@@ -78,5 +78,5 @@ deploy:
     file_glob: true
     file: assets/*
     on:
-      tags: true
+      branch: feature/add_travis_deploy
       dist: xenial

@@ -45,12 +45,14 @@ script:
   - # export PYTHONPATH="`inkscape -x`:$HOME/.config/inkscape/extensions/"
   - # python2 -m pytest --verbose -s pytests
 
+after_success:
+  - VERSION_CHANGED=$(git diff-tree --no-commit-id --name-only -r HEAD | grep -q extension/textext/VERSION; echo $?;)
+
 before_deploy:
   - bash build_docs.sh
   - python2 build_packages.py
   - git config --global user.email "builds@travis-ci.com"
   - git config --global user.name "Travis CI"
-  - VERSION_CHANGED=$(git diff-tree --no-commit-id --name-only -r HEAD | grep -q extension/textext/VERSION; echo $?;)
   - VERSION=$(head -n 1 extension/textext/VERSION)
   - if [[ $VERSION_CHANGED = 0 ]]; then
       git tag $VERSION -a -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER";

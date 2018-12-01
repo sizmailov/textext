@@ -45,13 +45,14 @@ script:
   - export PYTHONPATH="`inkscape -x`:$HOME/.config/inkscape/extensions/"
   - python2 -m pytest --verbose -s pytests
 
+before_deploy:
+  - bash publish_docs.sh
 
 deploy:
-  - provider: script
-    script: bash publish_docs.sh
+  - provider: pages
     verbose: true
     skip-cleanup: true
     github-token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
-    keep-history: true
+    keep-history: false
     on:
       branch: feature/add_travis_deploy

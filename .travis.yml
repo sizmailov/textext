@@ -50,7 +50,7 @@ before_deploy:
   - python2 build_packages.py
   - git config --global user.email "builds@travis-ci.com"
   - git config --global user.name "Travis CI"
-  - VERSION_CHANGED=$($(git diff-tree --no-commit-id --name-only -r HEAD | grep extension/textext/VERSION); echo $?)
+  - VERSION_CHANGED=$(git diff-tree --no-commit-id --name-only -r HEAD | grep extension/textext/VERSION; echo $?;)
   - VERSION=$(head -n 1 extension/textext/VERSION)
   - if [[ $VERSION_CHANGED = 0 ]]; then
       git tag $VERSION -a -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER";
@@ -68,8 +68,10 @@ deploy:
     github-token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
     keep-history: false
     on:
+      tags: false
       branch: feature/add_travis_deploy
       dist: xenial
+      condition: $VERSION_CHANGED = 0
 
   - provider: releases
     api_key:  $GITHUB_TOKEN
@@ -78,5 +80,7 @@ deploy:
     file_glob: true
     file: assets/*
     on:
+      tags: false
       branch: feature/add_travis_deploy
       dist: xenial
+      condition: $VERSION_CHANGED = 0

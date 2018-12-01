@@ -36,19 +36,29 @@ matrix:
           - texlive-latex-base
 
 before_script:
-   - # python2 -m pip install pytest lxml Pillow
-   - # python2 test_installation_script.py 2> /dev/null
-   - # python2 setup.py
+   - python2 -m pip install pytest lxml Pillow
+   - python2 test_installation_script.py 2> /dev/null
+   - python2 setup.py
 
 
 script:
-  - # export PYTHONPATH="`inkscape -x`:$HOME/.config/inkscape/extensions/"
-  - # python2 -m pytest --verbose -s pytests
+  - export PYTHONPATH="`inkscape -x`:$HOME/.config/inkscape/extensions/"
+  - python2 -m pytest --verbose -s pytests
 
 before_deploy:
   - bash build_docs.sh
   - python2 build_packages.py
+  - git config --global user.email "builds@travis-ci.com"
+  - git config --global user.name "Travis CI"
   - VERSION_CHANGED=$($(git diff-tree --no-commit-id --name-only -r HEAD | grep extension/textext/VERSION); echo $?)
+  - VERSION=$(head -n 1 extension/textext/VERSION)
+  - if [[ $VERSION_CHANGED = 0 ]]; then
+      git tag $VERSION -a -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER";
+    fi
+  - if echo $VERSION | grep -q "-" ;
+      then export GITHUB_DEPLOY_PRERELEASE=true;
+      else export GITHUB_DEPLOY_PRERELEASE=false;
+    fi
 
 deploy:
   - provider: pages
@@ -58,16 +68,15 @@ deploy:
     github-token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
     keep-history: false
     on:
-      branch: feature/add_travis_deploy
+      tags: true
       dist: xenial
-      condition: $VERSION_CHANGED = 0
 
   - provider: releases
     api_key:  $GITHUB_TOKEN
+    prerelease: $GITHUB_DEPLOY_PRERELEASE
     skip_cleanup: true
     file_glob: true
     file: assets/*
     on:
-      branch: feature/add_travis_deploy
+      tags: true
       dist: xenial
-      # condition: $VERSION_CHANGED = 0

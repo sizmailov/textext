@@ -3,10 +3,8 @@ language: python
 branches:
   only:
   - master
-  - dev
   - develop
-  - travis_ci
-  - rework_error_handling
+  - testing/travis_error
 
 virtualenv:
   system_site_packages: true
